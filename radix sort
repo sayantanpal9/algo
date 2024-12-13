@@ -1,0 +1,106 @@
+#include <bits/stdc++.h>
+using namespace std;
+void radix(vector<pair<pair<int,int>,int>>&a){
+    int n=a.size();
+    {
+        vector<int>op(n);
+        for(auto x:a){
+            int u=x.first.second;
+            op[u]++;
+
+        }
+        vector<pair<pair<int,int>,int>>ok(n);
+        vector<int>p(n);
+        p[0]=0;
+        for(int i=1;i<n;i++){
+            p[i]=p[i-1]+op[i-1];
+        }
+        for(auto x:a){
+            int i=x.first.second;
+            ok[p[i]]=x;
+            p[i]++;
+        }
+        a=ok;
+
+    }
+    {
+        vector<int>op(n);
+        for(auto x:a){
+            int u=x.first.first;
+            op[u]++;
+
+        }
+        vector<pair<pair<int,int>,int>>ok(n);
+        vector<int>p(n);
+        p[0]=0;
+        for(int i=1;i<n;i++){
+            p[i]=p[i-1]+op[i-1];
+        }
+        for(auto x:a){
+            int i=x.first.first;
+            ok[p[i]]=x;
+            p[i]++;
+        }
+        a=ok;
+
+    }
+}
+
+int main(){
+string s;
+cin>>s;
+s=s+'$';
+int n=s.size();
+vector<int>ok(n),op(n);
+{
+    vector<pair<char,int>>a(n);
+    for(int i=0;i<n;i++){
+        a[i]={s[i],i};
+
+    }
+    sort(a.begin(),a.end());
+    for(int i=0;i<n;i++){
+        ok[i]=a[i].second;
+    }
+    op[ok[0]]=0;
+
+    for(int i=1;i<n;i++){
+        if(a[i].first==a[i-1].first){
+            op[ok[i]]=op[ok[i-1]];
+        }
+        else{
+            op[ok[i]]=op[ok[i-1]]+1;
+        }
+    }
+
+}
+int h=0;
+while((1<<h)<n){
+    vector<pair<pair<int,int>,int>>a(n);
+    for(int i=0;i<n;i++){
+        a[i]={{op[i],op[(i+(1<<h))%n]},i};
+    }
+    radix(a);
+    for(int i=0;i<n;i++){
+        ok[i]=a[i].second;
+    }
+    op[ok[0]]=0;
+
+    for(int i=1;i<n;i++){
+        if(a[i].first==a[i-1].first){
+            op[ok[i]]=op[ok[i-1]];
+        }
+        else{
+            op[ok[i]]=op[ok[i-1]]+1;
+        }
+    }
+    h++;
+
+}
+
+for(int i=0;i<n;i++){
+    cout<<ok[i]<<" ";
+}
+
+return 0;
+}
